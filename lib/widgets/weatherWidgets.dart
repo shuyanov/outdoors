@@ -81,10 +81,10 @@ class _LocationInheritedWidgetState extends State<LocationInheritedWidget> {
   bool _isLoading = true;
 
   _loadData() async{
-    var location = await _determinePosition();
+    Position location = await _determinePosition();
     Placemark place = Placemark(
-        lat: location.latituid,
-        lon: location.lonitvde,
+        lat: location.longitude,
+        lon: location.latitude,
         cityName: "Ivanovo"
     );
 
@@ -123,6 +123,7 @@ class _LocationInheritedWidgetState extends State<LocationInheritedWidget> {
   @override
   void initState() {
     super.initState();
+    _loadData();
   }
 
   @override

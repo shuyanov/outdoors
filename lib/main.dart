@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 
 
 import 'model/weatherModel.dart';
+import 'widgets/LocationInfo.dart';
 import 'widgets/weatherWidgets.dart';
 
 
@@ -32,7 +33,9 @@ class MyApp extends StatelessWidget {
             appBar: AppBar(
               title: Text("First project"),
             ),
-            body: WeatherPage(cityName: "Moscow",)
+            body:LocationInheritedWidget(
+                child: WeatherPage(cityName: "Ivanovo",)
+            )
 
         )
     );
@@ -54,17 +57,15 @@ class _WeatherPageState extends State<WeatherPage>
 {
   List weatherForecast = [];
   bool _isLoading = true;
-  String _lat = "";
-  String _lon = "";
+  Placemark? _placemark;
 
   @override
-  void initState() {
-    _startLoadingData();
-    super.initState();
+  void didChangeDepencies(){
+    _placemark = LocationInfo.of(context).placemark;
+    _getWeatherData();
   }
 
   _startLoadingData() async{
-    await _determinePosition();
     _getWeatherData();
   }
 
@@ -96,12 +97,12 @@ class _WeatherPageState extends State<WeatherPage>
   // }
 
   _getWeatherData() async {
-    if(_lat == "" || _lon == "") return;
+    if(_placemark == null) return;
     Map<String, dynamic> _queryParams = {
       "APPID": Constants.WEATHER_APP_ID,
-      "units": "metric",
-        "lat":_lat,
-        "lon":_lon
+      "units":"metric",
+        "lat":_placemark!.lat,
+        "lon":_placemark!.lon
       };
 
       var uri = Uri.https(Constants.WEATHER_BASE_URL, Constants.WEATHER_FORECAST_URL, _queryParams);

@@ -1,5 +1,3 @@
-import 'dart:js';
-
 import 'package:first_project/model/weatherModel.dart';
 import 'package:flutter/material.dart';
 

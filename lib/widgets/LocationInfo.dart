@@ -10,7 +10,7 @@ class LocationInfo extends InheritedWidget{
       context.dependOnInheritedWidgetOfExactType<LocationInfo>()!;
 
   @override
-  bool updateShouldNotify(LocationInfo oldLocationInfo) {
+  bool updateShouldNotify(LocationInfo oldLocationInfo){
     var oldLocationTime = oldLocationInfo.placemark.timeStamp;
     var newLocationTime = placemark.timeStamp;
 

@@ -1,4 +1,4 @@
-class Weather{
+class Weather extends ListItem{
   DateTime dateTime;
   num degree;
   String iconUrl;
@@ -14,9 +14,13 @@ class Weather{
   static const String weatherURL ="http://openweathermap.org/img/wn/";
 
   String getIconURL() => "$weatherURL$iconUrl.png";
+
+  DateTime getDateTime(){return dateTime;}
 }
 
-class DayHeading{
+abstract class ListItem{}
+
+class DayHeading extends ListItem{
   final DateTime dateTime;
 
   DayHeading({

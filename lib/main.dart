@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:first_project/Constants.dart';
+import 'package:first_project/widgets/PlacesPage.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
@@ -28,14 +29,14 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home:  Scaffold(  //backGrount
-            backgroundColor: Colors.lightGreen,
+        home:  Scaffold(
             appBar: AppBar(
               title: Text("First project"),
             ),
-            body:LocationInheritedWidget(
-                child: WeatherPage(cityName: "Ivanovo",)
-            )
+            body: PlacesPage(),
+            // body:LocationInheritedWidget(
+            //     child: WeatherPage(cityName: "Moscow",)
+            // )
 
         )
     );
@@ -55,17 +56,16 @@ class WeatherPage extends StatefulWidget {
 
 class _WeatherPageState extends State<WeatherPage>
 {
-  List weatherForecast = [];
+  List<Weather> weatherForecast = [];
+  List<ListItem> itemsToBuild = [];
   bool _isLoading = true;
   Placemark? _placemark;
 
   @override
-  void didChangeDepencies(){
-    _placemark = LocationInfo.of(context).placemark;
-    _getWeatherData();
-  }
-
-  _startLoadingData() async{
+  void didChangeDependencies(){
+    _placemark = LocationInfo
+        .of(context)
+        .placemark;
     _getWeatherData();
   }
 
@@ -96,15 +96,16 @@ class _WeatherPageState extends State<WeatherPage>
   //   _lon = currentPosition.longitude.toString();
   // }
 
-  _getWeatherData() async {
+  _getWeatherData() async{
     if(_placemark == null) return;
     Map<String, dynamic> _queryParams = {
       "APPID": Constants.WEATHER_APP_ID,
       "units":"metric",
-        "lat":_placemark!.lat,
-        "lon":_placemark!.lon
+        "lat":_placemark!.lat.toString(),
+        "lon":_placemark!.lon.toString()
       };
 
+      // _queryParams.runtimeType()// показывает какого типа переменная
       var uri = Uri.https(Constants.WEATHER_BASE_URL, Constants.WEATHER_FORECAST_URL, _queryParams);
       var response = await http.get(uri);
 
@@ -119,9 +120,37 @@ class _WeatherPageState extends State<WeatherPage>
 
         weatherForecast.add(Weather(dateTime: dateTime, degree: degree, iconUrl: icon, clouds: clouds));
       });
-      setState(() {
-        _isLoading = false;
-      });
+      initWeatherWithData();
+
+    }
+
+    initWeatherWithData(){
+      var now = DateTime.now();
+      var itCurreentDay = now;
+      var itNextDay = DateTime(now.year, now.month, now.day + 1, 0,0,0,0,0);
+
+       itemsToBuild.add(DayHeading(dateTime: now));
+
+       for(int i = 0; i < weatherForecast.length; i++){
+         if(weatherForecast[i].getDateTime() == itNextDay){
+           itCurreentDay = itNextDay;
+           itNextDay = DateTime(itNextDay.year, itNextDay.month, itNextDay.day + 1, 0,0,0,0,0);
+           itemsToBuild.add(DayHeading(dateTime: itCurreentDay));
+           itemsToBuild.add(weatherForecast[i]);
+         }
+         else if(weatherForecast[i].getDateTime().isAfter(itNextDay)){
+           itCurreentDay = itNextDay;
+           itNextDay = DateTime(itNextDay.year, itNextDay.month, itNextDay.day + 1, 0,0,0,0,0);
+           itemsToBuild.add(DayHeading(dateTime: itCurreentDay));
+         }
+         else{
+           itemsToBuild.add(weatherForecast[i]);
+         }
+       }
+
+       setState(() {
+         _isLoading = false;
+       });
     }
 
     @override
@@ -133,7 +162,10 @@ class _WeatherPageState extends State<WeatherPage>
         return ListView.builder(
             itemCount: weatherForecast.length,
             itemBuilder: (BuildContext ctx, int index){
-              return WeatherWidget(weather: weatherForecast[index]);
+              final item = itemsToBuild[index];
+              if(item is Weather) return WeatherWidget(weather: item,);// отображает погоду итд
+              else if(item is DayHeading) return dayHeadingWidget(dayHeading: item,);// заголовок
+              else return Text("Error type");
             }
             );
       }

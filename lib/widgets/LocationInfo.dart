@@ -39,7 +39,7 @@ class _LocationInheritedWidgetState extends State<LocationInheritedWidget> {
     Placemark place = Placemark(
         lat: location.longitude,
         lon: location.latitude,
-        cityName: "Ivanovo"
+        cityName: "Moscow"
     );
     print(place.getPlacemark());
     setState(() {

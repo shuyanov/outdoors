@@ -50,8 +50,13 @@ class _PlacesPageState extends State<PlacesPage> {
           }
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: (){
-          Navigator.of(context).pushNamed("/map");
+        onPressed: () async{
+          var mapResult = await Navigator.of(context).pushNamed("/map");
+          print("mapResult ${mapResult}");
+          if(mapResult == null) return;
+          setState(() {
+            _places.add((mapResult as Placemark));
+          });
         },
         child: Icon(Icons.add),
       ),

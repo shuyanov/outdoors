@@ -35,13 +35,14 @@ class _LocationInheritedWidgetState extends State<LocationInheritedWidget> {
   bool _isLoading = true;
 
   _loadData() async{
-    Position location = await _determinePosition();
+    var location = await _determinePosition();
     Placemark place = Placemark(
-        lat: location.longitude,
-        lon: location.latitude,
-        cityName: "Moscow"
+        lat: location.latitude,
+        lon: location.longitude,
+        cityName: "Ivanovo",
+        id: 0
     );
-    print(place.getPlacemark());
+
     setState(() {
       _placemark = place;
       _isLoading = false;
@@ -69,8 +70,6 @@ class _LocationInheritedWidgetState extends State<LocationInheritedWidget> {
       return Future.error(
           'Location permissions are permanently denied, we cannot request permissions.');
     }
-    print(await Geolocator.getCurrentPosition());
-
     return await Geolocator.getCurrentPosition();
   }
 

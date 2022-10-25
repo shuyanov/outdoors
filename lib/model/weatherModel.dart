@@ -33,11 +33,13 @@ class Placemark{
   final double lon;
   final String cityName;
   final int timeStamp = DateTime.now().millisecondsSinceEpoch;
+  final int id;
 
   Placemark({
     required this.lat,
     required this.lon,
     required this.cityName,
+    required this.id
   });
 
   Map<String, dynamic> getPlacemark(){
@@ -45,7 +47,8 @@ class Placemark{
       "lat": this.lat,
       "lon": this.lon,
       "cityName": this.cityName,
-      "timestamp": this.timeStamp
+      "timestamp": this.timeStamp,
+      "id": this.id
     };
   }
 }

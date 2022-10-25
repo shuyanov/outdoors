@@ -1,4 +1,3 @@
-import 'package:first_project/model/weatherModel.dart';
 import 'package:flutter/material.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 import 'package:first_project/widgets/LocationInfo.dart';
@@ -55,11 +54,11 @@ class _MapPageState extends State<MapPage> {
                         onPressed: (){
                           Navigator.of(context).pop();
                           Navigator.of(context).pop(
-                            Placemark(
-                                lat: _placemark.point.latitude,
-                                lon: _placemark.point.longitude,
-                                cityName: _editingController.value.text
-                            )
+                              {
+                            "lat": _placemark.point.latitude,
+                            "lon": _placemark.point.longitude,
+                            "cityName": _editingController.value.text
+                              }
                           );
                         },
                         child: Text("Сохранить")

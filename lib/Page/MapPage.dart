@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
-import 'package:first_project/widgets/LocationInfo.dart';
+import '../widgets/LocationInfo.dart';
 
 class MapPage extends StatefulWidget {
-  const MapPage({ Key? key}) : super(key: key);
+  const MapPage({super.key});
 
   @override
   State<MapPage> createState() => _MapPageState();
@@ -20,10 +20,8 @@ class _MapPageState extends State<MapPage> {
     _placemark = PlacemarkMapObject(
         mapId: MapObjectId("example"),
         point: Point(
-          latitude: LocationInfo.of(context).placemark.lat,
-          longitude: LocationInfo.of(context).placemark.lon,
-        )
-    );
+            latitude: LocationInfo.of(context).placemark.lat,
+            longitude: LocationInfo.of(context).placemark.lon));
   }
 
   @override
@@ -33,39 +31,37 @@ class _MapPageState extends State<MapPage> {
         title: Text("Search new place"),
       ),
       body: YandexMap(
-        mapObjects: [
-            _placemark
-        ],
+        mapObjects: [_placemark],
         onMapCreated: _onMapCreated,
         onMapTap: _onMapTap,
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: (){
-          showDialog(// открывает виджет в который вводим местоположение
-              context: context,
-              builder: (BuildContext context){
-                return AlertDialog(
-                  title: Text("Press map"),
-                  content: TextField(// Строчка в которую можно вводить текст
-                    controller: _editingController,
-                  ),
-                  actions: [
-                    ElevatedButton(
-                        onPressed: (){
-                          Navigator.of(context).pop();
-                          Navigator.of(context).pop(
-                              {
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('Укажите название местоположения'),
+                content: TextField(
+                  controller: _editingController,
+                ),
+                actions: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pop(
+                          {
                             "lat": _placemark.point.latitude,
                             "lon": _placemark.point.longitude,
-                            "cityName": _editingController.value.text
-                              }
-                          );
-                        },
-                        child: Text("Сохранить")
-                    )
-                  ],
-                );
-              }
+                            "cityName": _editingController.value.text,
+                          }
+                      );
+                    },
+                    child: Text("Сохранить"),
+                  ),
+                ],
+              );
+            },
           );
         },
         child: Icon(Icons.add),
@@ -73,27 +69,23 @@ class _MapPageState extends State<MapPage> {
     );
   }
 
-  void _onMapTap(Point point){
+  void _onMapTap(Point point) {
     setState(() {
-      _placemark = PlacemarkMapObject(
-          mapId: MapObjectId("newpos"),
-          point: point
-      );
-      _controller.moveCamera(CameraUpdate.newCameraPosition(CameraPosition(target: point)));
+      _placemark =
+          PlacemarkMapObject(mapId: MapObjectId("newpos"), point: point);
+      _controller.moveCamera(
+          CameraUpdate.newCameraPosition(CameraPosition(target: point)));
     });
   }
 
-  void _onMapCreated(YandexMapController controller){
+  void _onMapCreated(YandexMapController controller) {
     _controller = controller;
-    _controller.moveCamera(
-        CameraUpdate.newCameraPosition(
-          CameraPosition(
-              target: Point(
-                  latitude: _placemark.point.latitude,
-                  longitude: _placemark.point.longitude,
-              )
-          ),
-        )
-    );
+    _controller.moveCamera(CameraUpdate.newCameraPosition(
+      CameraPosition(
+        target: Point(
+            latitude: _placemark.point.latitude,
+            longitude: _placemark.point.longitude),
+      ),
+    ));
   }
 }

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
+
 import 'model/weatherModel.dart';
 
 const String DB_NAME = "wather_db";
@@ -15,8 +16,8 @@ const String CREATE_PLACE_TABLE = "CREATE TABLE ${PLACES_TABLE_NAME}("
 
 const List<Map<String, dynamic>> _initPlaces = [
   {"lat": 55.7532, "lon": 37.6206, "cityName": "Москва"},
-  {"lat": 48.8753, "lon": 2.2950, "cityName": "Париж"},
-  {"lat": 51.5011, "lon": -0.1254, "cityName": "Лондон"}
+  {"lat": 48.8753, "lon": 2.2950, "cityName": "Paris"},
+  {"lat": 51.5011, "lon": -0.1254, "cityName": "London"}
 ];
 
 class DBProvider {
@@ -40,7 +41,7 @@ class DBProvider {
     return await openDatabase(
       path,
       version: 1,
-      onCreate: (Database db, _) async {// функция которая создаётся в начале бд
+      onCreate: (Database db, _) async {
         await db.execute(CREATE_PLACE_TABLE);
         Batch batch = db.batch();
         _initPlaces.forEach((Map<String, dynamic> placemark) {
@@ -59,15 +60,15 @@ class DBProvider {
 
   Future<List<Placemark>> getAllPlacemarks() async {
     final db = await database;
-    var res = await db.query(PLACES_TABLE_NAME); // получает даные из табл
+    var res = await db.query(PLACES_TABLE_NAME);
     List<Placemark> list = res.isNotEmpty
         ? res.map((Map<String, dynamic> dbRes) {
       return Placemark(
+          id: dbRes["id"],
           lat: dbRes["lat"],
           lon: dbRes["lon"],
-          cityName: dbRes["cityName"],
-          id: dbRes["id"]);
-    }).toList() //возвращает список
+          cityName: dbRes["cityName"]);
+    }).toList()
         : [];
 
     return list;
@@ -75,7 +76,8 @@ class DBProvider {
 
   deletePlacemark(int id) async {
     final db = await database;
-    var deleteID = db.delete(PLACES_TABLE_NAME, where: "id = ?", whereArgs: [id]);
-    return deleteID;// вернет id поля
+    var deleteID =
+    db.delete(PLACES_TABLE_NAME, where: "id = ?", whereArgs: [id]);
+    return deleteID;
   }
 }

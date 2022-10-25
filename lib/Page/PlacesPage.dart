@@ -1,6 +1,8 @@
+import 'package:first_project/Style/Theme.dart';
 import 'package:flutter/material.dart';
 import 'package:first_project/DbProvider.dart';
 import 'package:first_project/model/weatherModel.dart';
+import 'package:provider/provider.dart';
 
 
 
@@ -41,6 +43,15 @@ class _PlacesPageState extends State<PlacesPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Places"),
+        actions: [
+          IconButton(
+              onPressed: () {
+                final provider =
+                Provider.of<WeatherTheme>(context, listen: false);
+                provider.switchTheme();
+              },
+              icon: Icon(Icons.sunny))
+        ],
       ),
       body: _isLoading
           ? Center(child: CircularProgressIndicator())

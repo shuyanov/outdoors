@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 class WeatherTheme extends ChangeNotifier {
   bool _isDark = false;
 
-  ThemeData get currentTheme => _isDark ? WeatherThemeData().createDarkTheme() : WeatherThemeData().createLightTheme();
+  ThemeData get currentTheme =>
+      _isDark ? WeatherThemeData().createDarkTheme() : WeatherThemeData().createLightTheme();
   switchTheme(){
     _isDark = !_isDark;
     notifyListeners();

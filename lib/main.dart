@@ -1,13 +1,20 @@
 import 'package:first_project/Page/MapPage.dart';
+import 'package:first_project/Style/Theme.dart';
 import 'package:first_project/widgets/LocationInfo.dart';
 import 'package:flutter/material.dart';
 import 'package:first_project/Page/PlacesPage.dart';
 import 'Page/PalcePage.dart';
+import 'package:provider/provider.dart';
+
 
 
 
 void main() {
-  runApp(const MyApp());
+
+  runApp(MultiProvider(
+    providers: [ChangeNotifierProvider(create: (_) => WeatherTheme()),],
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -21,9 +28,10 @@ class MyApp extends StatelessWidget {
     return LocationInheritedWidget(//даёт доступ к
       child: MaterialApp(
           title: 'Flutter Demo',
-          theme: ThemeData(
-            primarySwatch: Colors.blue,
-          ),
+          // theme: ThemeData(
+          //   primarySwatch: Colors.blue,
+          // ),
+        theme: Provider.of<WeatherTheme>(context).currentTheme,
           initialRoute: "/",
           onGenerateRoute: getRouds,
       ),
